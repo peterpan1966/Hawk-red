@@ -94,6 +94,36 @@ async function obtenerActivosCliente(token, apikey, idCliente) {
       return null;
   }
 }
+// obtener vehiculos completos
+async function obtenerVehiculosCompletos(token, apikey) {
+  const url = 'https://api.service24gps.com/api/v1/ondelivery/vehicleGetAllComplete';
+
+  const formData = new URLSearchParams();
+  formData.append('apikey', apikey);
+  formData.append('token', token);
+
+  try {
+      const response = await fetch(url, {
+          method: 'POST',
+          body: formData,
+      });
+
+      console.log("Respuesta obtenerVehiculosCompletos:", response);
+      console.log("Headers de la peticion:", response.headers);
+      console.log("Status de la respuesta:", response.status);
+
+      if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const vehiculos = await response.json();
+      console.log("Datos obtenerVehiculosCompletos:", vehiculos);
+      return vehiculos;
+  } catch (error) {
+      console.error('Error al obtener vehículos completos:', error);
+      return null;
+  }
+}
 
 
 async function main() {
@@ -121,5 +151,34 @@ async function main() {
 }
 
 main();
+
+/* //Pedro convertir array en objeto 
+const activosPorPlaca = {};
+if (activos && activos.data) {
+  activos.data.forEach(activo => {
+    activosPorPlaca[activo.placa] = activo;
+  });
+}
+ */
+
+/*Recorre los resultados de la consulta SQL y busca la información correspondiente en el objeto activosPorPlaca.
+ Agrega las columnas dispositivo y sim a cada fila de los resultados de la consulta SQL.*/
+
+/* param.moviles = moviles.recordset.map(movil => {
+  const activoCorrespondiente = activosPorPlaca[movil.patente];
+  if (activoCorrespondiente) {
+    return {
+      ...movil,
+      dispositivo: activoCorrespondiente.dispositivo,
+      sim: activoCorrespondiente.sim
+    };
+  } else {
+    return {
+      ...movil,
+      dispositivo: null,
+      sim: null
+    };
+  }
+}); */
 
 

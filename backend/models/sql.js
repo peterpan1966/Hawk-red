@@ -1,5 +1,6 @@
 import sql from "mssql";
 import 'dotenv/config.js'
+import { obtenerToken, obtenerClientes, obtenerActivosCliente } from '../../frontend/token-api/token';
 
 
 const defaultConfig = {
@@ -217,6 +218,49 @@ static async getunidadesclientes(id){
 
     console.log('Datos obtenidos de la base de datos:', moviles.recordset);
     //Pedro
+    // AGregado que trae de la api los datos de GPS
+/*
+
+const activos = await obtenerActivosCliente(token, apikey, idCliente);
+  if (activos) {
+    console.log('Activos del cliente:', activos);
+  }
+
+  const activosPorPlaca = {};
+  if (activos && activos.data) {
+    activos.data.forEach(activo => {
+      activosPorPlaca[activo.placa] = activo;
+    });
+  }
+
+  param.moviles = moviles.recordset.map(movil => {
+    const activoCorrespondiente = activosPorPlaca[movil.patente];
+    if (activoCorrespondiente) {
+      return {
+        ...movil,
+        dispositivo: activoCorrespondiente.dispositivo,
+        sim: activoCorrespondiente.sim
+      };
+    } else {
+      return {
+        ...movil,
+        dispositivo: null,
+        sim: null
+      };
+    }
+  });
+
+  if (param.moviles.length === 0) {
+    return res.status(201).json({ message: 'No se encontraron moviles' });
+  }
+
+  return param;
+} catch (error) {
+  console.error('Error:', error);
+  return { error: 'Ocurrió un error' };
+}
+
+*/
     param.moviles=moviles.recordset;
 
     if (moviles.recordset.length === 0) {
