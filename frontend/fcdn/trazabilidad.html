@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge" /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="icon" href="../img/logo-2.ico"> -->
+    <title>HAWK</title>
+    <link rel="stylesheet" href="../css/estilo.css">
+    <link rel="stylesheet" href="../css/nav.css">
+</head>
+<body>
+  <nav class="nav"> 
+    <!-- <img src="../img/logo-1.png" class="logo" alt="logo-HAWK" title="Logo FCDN" > -->
+    <h1 class="titulo">PRONTO-REDGPS-HAWK</h1>
+    <div>
+    <a href="clientes.html">clientes</button></div>
+    <div class="content-login">               <!-- logo ususario -->    
+      <span class="login cursor"></span>                         
+      <div class="sesion cerrado">
+        <h1 class="cerrar-sesion cursor">Cerrar Sesión</h1>
+      </div>
+    </div>
+  </nav>
+  <main class="main">
+    <!-- <img src="../img/logo-1.jpg" class="img" alt="Logo HAWK" title="Logo"> -->
+     <form class="form"> <!-- contenedor -->
+        <div class="content-fecha cursor">  <!--contenedor fecha  -->
+          <span class="text">Desde</span>
+          <input type="date" class="desde cursor">
+          <span class="text">Hasta</span>
+          <input type="date" class="hasta cursor">
+        </div>
+        <div class="content-select cursor">    <!-- contenedor selects  -->
+          <select class="servicio select cursor" form="serv" >  <!-- aqui hace referencia al codigo donde esta .servicio-->
+            <option value="">SERVICIO</option>  <!--esto es solo texto-->
+          </select>
+          <select class="centro select cursor" form="cen">
+            <option value="">TECNICO</option>
+          </select>
+          <select class="entidad select  cursor">
+            <option value="">CLIENTES</option>
+          </select>
+        </div>
+        <div class="botones">                       <!-- contenedor botones -->
+          <button type="submit" class="boton cursor">GENERAR REPORTE</button>
+          <!-- <img src="../img/xlsx-1.ico" class="xlsx cursor"> -->
+        </div>                         
+    </form>
+    <table class="table" ></table>
+  </main>
+  
+  <script src="../codigo/config.js"></script>
+  <script src="../codigo/codigo.js"></script>
+  <script src="../codigo/logout.js"></script>
+</body>
+</html>

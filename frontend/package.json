@@ -1,0 +1,16 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx http-server ./ -p 8000 -o index.html ",
+ 
+    "reload": "npx http-server ./ --cors -c-1 --silent -p 8000"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "http-server": "^14.1.1"
+  }
+}

@@ -1,0 +1,77 @@
+/* MODAL DE ERRORES                          ----------------- */
+
+.content-modal{
+	display: flex;
+	  cursor: pointer;
+	  position: fixed;
+	  left: 70%;
+	  flex-wrap: wrap;
+	  top: 83.5vh;
+	  width: 28.5%;
+	  margin-left: 1%;
+	  background-color: #0505059d;
+	  border-radius: 3%;
+	  border: 3px solid #0000005e;
+	}
+	.x-modal{
+	  position: absolute;
+	  display: block;
+	  height: 1.2em;
+	  left: 95%;
+	  margin-bottom: 5% ;
+	  margin-top: 1%;
+	} 
+	.modal{
+	  display: flex;
+	  flex-wrap: wrap;
+	  align-items: center;
+	  flex: 1 1;
+	}
+	.img-modal{
+	height: 6em;
+    margin: 1em;
+	}
+	.txt-modal{
+	  font-size: 2em;
+	  align-self: center;
+	  text-align: center;
+	  font-family:'Times New Roman', Times, serif;
+	  color:#ffffff;
+	}
+	.carga{
+	  position: absolute;
+	  align-self: end;
+	  margin-top: .5em;
+	  height: 1em;
+	  background-color: #000;
+	}
+	.txt-bar{
+	  color: #fff;
+	  margin-left: .5em;
+	}
+
+ /* $%_$%$%_$%       MEDIA QUERY SCANN          $%_$%$_%_$%_$%_$%_ */
+
+@media screen and (max-height: 700px) and (max-width: 1370px) {
+    /* MODAL ERROR */
+  .content-modal{
+    top:87vh;
+  }
+
+  .x-modal{
+	  height: 1em;
+  }
+
+  .img-modal{
+    height: 3em;
+    margin: 1em;
+    }
+
+    .txt-modal{
+      font-size: 1.5em;
+    }
+    .txt-bar{
+	font-size: 1em;
+      margin-left: .3em;
+    }
+}

@@ -1,0 +1,233 @@
+body{
+    margin: 0;
+      padding: 0;
+    user-select: none;
+  }
+
+  .filaFija {
+    background-color: rgb(233, 53, 53);
+    position: sticky;
+    top: 12rem
+  }
+
+  #titulo{
+    align-self: center;
+    font-size: 1.2rem;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-style: italic;
+  }
+
+  a img {
+    width: 100%; 
+    height: auto; 
+    max-width: 20px; 
+    object-fit: cover; 
+  }
+
+  .img{
+    position: fixed;
+    top: 15vh;
+    height: 100vh;
+      width: 100vw;
+    opacity: .4;
+    z-index: -1;
+  }
+  .cursor{
+    cursor:pointer;
+  }
+  .form{
+    position: fixed;
+    top: 6em;
+    margin-bottom: 1em;
+    height: 8em;
+    width: 100vw;
+    background-color: #fff;
+    display: grid;
+    grid-template-rows: repeat(1, auto);
+    grid-template-columns:28em repeat(2, 1fr);
+    /* z-index: 100; */
+  }
+  
+  /* FECHA                       -------------*/
+  .content-fecha{
+    display: flex;
+    background-color: #fff;
+    height: 4em;
+    width: 26em;
+    margin: 1vw;
+    padding:0 .5vw ;
+    border-radius: 10px;
+    border: solid 1px #000;
+    align-self:center;
+  }
+  .text{
+    align-self: center;
+    font-size: 1.2em;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  }
+  .desde, .hasta{
+    margin: 0 1em ;
+    height: 3em;
+    align-self: center;
+    border-style: none;
+    font-size: 1.2em;
+    outline: none
+  }
+  
+  /* SELECT                      --------------*/
+  .content-select{
+    display: flex;
+    padding:.5vh 0 ;
+    margin: 0 1vw;
+  }
+  .select{
+    align-self: center;
+    display: inline-block;
+    height: 2.7em;
+    width: 7em;
+    margin: 0 1vw;
+    border-radius: 10px;
+    font-size: 1.5em;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    outline: none;
+    flex: 1 1;
+  }
+  .botones{
+    display: flex;
+    width: 21em;
+  }
+  /* BOTON                         ---------------*/
+  .boton{
+    height: 3em;
+    margin: 0 1vw;
+    color: #fff;
+    background-color: #0000ff;
+    border-style: none;
+    outline: none;
+    font-size: 1.3em;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    border-radius: .5em;
+    align-self: center;
+  }
+  
+  /* XLSX ICONO                        ----------------*/
+  .xlsx{
+    height: 4em;
+    margin: 0 1vw;
+    align-self: center;
+  }
+  
+  /* ESTILO DATOS DOM                  ---------------- */
+
+  .table-container {
+    margin: 20px;
+    padding: 15px;
+}
+  
+  .table{
+    border-collapse: separate;
+    margin-top: 12rem;
+    /* padding-top: 15em; */
+    /* min-height: 50vh;
+    width: 100%;
+    z-index: 5;
+    height: 29em;
+    border-collapse: collapse;  */
+    width: 100%;
+  }
+
+  .table td, .table th {
+    border: 1px solid #000; /* Agrega un borde */
+    padding: 0.5em; 
+    text-align: center;
+    vertical-align: middle; 
+}
+  
+  /* .encabezado{
+    position: sticky;
+    top: 12.5em;
+  } */
+  .content-encabezado{
+    display: grid;
+    position: sticky;
+    top: 14em;
+    grid-template-columns: repeat(34,12em );
+    padding: 1vh 1vw;
+    z-index: 3000;
+    background-color: #fff;
+  }
+  
+  .content-lista{
+    display: grid;
+    grid-template-columns: repeat(34,12em );
+    grid-template-rows:repeat(auto-fit);
+    padding: .5vh 1vw;
+    /* overflow-x: auto;
+    overflow-y: auto; */
+  }
+  .item-enc{
+    width: 70%;
+    padding: 0 .5vw;
+    font-size: 1em;
+    font-family:cursive;
+    border-radius: .3vw;
+    border-left: 2px solid #000;
+    border-bottom: 2px solid #000;
+  }
+  .li{
+    padding: .5vh 1vw;
+    font-size: 1em;
+    font-family:'Courier New', Courier, monospace;
+    border-left: 1px solid #00000065;
+  }
+  
+  
+    /* $%_$%$%_$%       MEDIA QUERY SCANN          $%_$%$_%_$%_$%_$%_ */
+  
+    @media screen and (max-width: 1550px) {
+  
+      /*   FORMULARIO   */
+      .form{
+        display: grid;
+        grid-template-rows: repeat(1, auto);
+        grid-template-columns:22em repeat(2, 1fr);
+       margin-bottom: .5em;
+      }
+  
+      .content-fecha{
+        height: 3em;
+        width:20em;
+      }
+      /* FECHAS */
+      .text{
+        font-size: 1em;
+      }
+  
+      .desde, .hasta{
+        margin: 0 .5em ;
+        height: 2em;
+        font-size: 1em;
+      }
+      /* SELECTS */
+      .select{
+        font-size: 1em;
+      }
+      /* BOTON GENERAR */
+      .boton{
+        height: 3em;
+        font-size: 1em;
+      }
+      /* BOTON DESCARGAR */
+      .xlsx{
+        height: 3em;
+      }
+  
+    /* LISTADO DE DATOS */
+    .content-encabezado{
+      top: 12.5em;
+    }
+    .li, .item-enc{
+      font-size: .9em;
+    }
+  
+  }

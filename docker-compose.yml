@@ -1,0 +1,18 @@
+# version: "3.9"
+services:
+  backfcdn:
+    build:
+      context: ./backend
+      dockerfile: dockerfile
+    restart: always
+    ports:
+      - "9000:9000"   
+    environment:
+      - .env
+  frontfcdn:
+    build:
+      context: ./frontend
+      dockerfile: dockerfile
+    restart: always
+    ports:
+      - "8000:8000"
