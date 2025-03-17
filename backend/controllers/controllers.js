@@ -120,6 +120,38 @@ getunidadesclientes= async (req,res)=>{
 }
 }
 
+//agregado de caracteristcas del activo 
+getcaractactivos= async (req,res)=>{
+  // let saludo = 'hola'
+  try{
+    console.log("Parámetros recibidos en la URL:", req.params);
+    const id = req.params.id;
+
+    // Verificar si el ID es válido
+    if (!id || isNaN(id)) {
+      return res.status(400).json({ error: "FALTA EL ID" });
+    }
+
+    // Convertir a entero y realizar la consulta
+    const parsedId = parseInt(id, 10);
+
+    const items = await this.model.getcaractactivos(parsedId);
+    
+    console.log(items);
+    // console.log('controller');
+    if(items.error){
+      console.log(items.error)
+      return res.status(400).json(items);
+    }
+    return res.json(items);
+} catch (err) {
+  console.error('error', err);
+  return res.status(500).json({ error: 'Error en el servidor' });
+}
+}
+
+// hasta aqui caractertisticas del activo 
+
 postAll= async(req,res)=>{
   const consulta = req.body
   // console.log(consulta);

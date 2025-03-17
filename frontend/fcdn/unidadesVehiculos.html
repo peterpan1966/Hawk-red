@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,27 +6,35 @@
     <link rel="stylesheet" type="text/css" href="../css/login.css">
     <link rel="stylesheet" href="../css/estilo.css">
     <link rel="stylesheet" href="../css/nav.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>Login</title>
-    <!-- <link rel="icon" href="./img/logo-2.ico"> -->
 </head>
 <body>
-  <nav class="nav"> 
-    <h1 class="titulo" id="titulo"></h1>
-    <div class="content-login">           
-      <span class="login cursor"></span>                         
-      <div class="sesion cerrado">
-        <h1 class="cerrar-sesion cursor">Cerrar Sesión</h1>
-      </div>
+    <nav class="nav"> 
+        <h1 class="titulo" id="titulo"></h1>
+        <div class="content-login"> 
+            <span class="login cursor"></span> 
+            <div class="sesion cerrado">
+                <h1 class="cerrar-sesion cursor">Cerrar Sesión</h1>
+            </div>
+        </div>
+    </nav>
+    <div class="contenedor">
+        <div class="card">
+            <div class="table-container">
+                <table class="table" id="tablaVehiculos">
+                </table>
+            </div>
+        </div>
+        <div class="card">
+            <div class="table-container">
+                <table class="table" id="tablaParalela">
+                </table>
+            </div>
+        </div>
     </div>
-  </nav>
-  <div class="table-container">
-    <table class="table" id="tablaVehiculos">
-    </table></div>
-
-
-  </body>
-  <script src="../codigo/config.js"></script>
-  <script src="../codigo/unidadesVehiculos.js"></script>
-  <script src="../codigo/logout.js"></script>
-
+</body>
+<script src="../codigo/config.js"></script>
+<script src="../codigo/unidadesVehiculos.js"></script>
+<script src="../codigo/logout.js"></script>
 </html>

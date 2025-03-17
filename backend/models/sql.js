@@ -1,6 +1,6 @@
 import sql from "mssql";
 import 'dotenv/config.js'
-import { obtenerToken, obtenerClientes, obtenerActivosCliente } from '../../frontend/token-api/token';
+import { obtenerToken, obtenerActivosCliente } from '../../frontend/token-api/token.js';
 
 
 const defaultConfig = {
@@ -25,8 +25,8 @@ export class Model{
     try {
       if(!consu.usuario || ! consu.password)throw new Error("FALTAN CAMPOS");
       const usuario =await consulta.request().query (`select  TOP 1 Login, Password, Perfil_PerfilID
-        from [181.10.162.155].TICKETS.dbo.PerfilUsuario
-        inner join [181.10.162.155].TICKETS.dbo.usuario  on usuarioid = Usuario_UsuarioId
+        from [181.10.162.155].REDGPS.dbo.PerfilUsuario
+        inner join [181.10.162.155].REDGPS.dbo.usuario  on usuarioid = Usuario_UsuarioId
         where Login = '${consu.usuario}' and Password = '${consu.password}' and Perfil_PerfilId = 3 order by Perfil_PerfilID asc;`);
 
         console.log("usuaior y pw",consu.usuario,consu.password,usuario,'fin');  
@@ -51,8 +51,8 @@ export class Model{
       //if(!consu.usu_nombre_usuario || ! consu.usu_clave)throw new Error("");
       if(!consu.Login || ! consu.Password)throw new Error("");
       const usuario =await consulta.request().query (`select  TOP 1 Login, Password, Perfil_PerfilID
-        from [181.10.162.155].TICKETS.dbo.PerfilUsuario  
-        inner join [181.10.162.155].TICKETS.dbo.usuario  on usuarioid = Usuario_UsuarioId 
+        from [181.10.162.155].REDGPS.dbo.PerfilUsuario  
+        inner join [181.10.162.155].REDGPS.dbo.usuario  on usuarioid = Usuario_UsuarioId 
         where Login = '${consu.Login}' and Password = '${consu.Password}' and Perfil_PerfilId = 3 order by Perfil_PerfilID asc;`);
         console.log("upw y susuario ",consu.Login,consu.Password,usuario);
       
@@ -74,13 +74,16 @@ export class Model{
    // const ent = await consulta.request().query('SELECT ent_id, ent_nombre FROM entidad WHERE ent_deshabilitado=0 ORDER BY ent_nombre ASC');
     //const cen = await consulta.request().query('SELECT cen_id, cen_nombre FROM centro WHERE cen_deshabilitado=0 ORDER BY cen_nombre ASC');
     // const ser = await consulta.request().query('SELECT top 5 Nombre from  [181.10.162.155].TICKETS.dbo.Tecnico ORDER BY Nombre ASC');
-    const ent = await consulta.request().query('SELECT ClienteId as ent_id, RazonSocial as ent_nombre from  [181.10.162.155].TICKETS.dbo.Cliente  ORDER BY ClienteId ASC');
-    const cen = await consulta.request().query('SELECT TecnicoId as cen_id, Nombre as cen_nombre from [181.10.162.155].TICKETS.dbo.Tecnico ORDER BY Nombre ASC');
-    // Pedro agrego consulta con los campos que me interesa
+    const ent = await consulta.request().query('SELECT ClienteId as ent_id, RazonSocial as ent_nombre from  [181.10.162.155].REDGPS.dbo.Cliente  ORDER BY ClienteId ASC');
+    const cen = await consulta.request().query('SELECT TecnicoId as cen_id, Nombre as cen_nombre from [181.10.162.155].REDGPS.dbo.Tecnico ORDER BY Nombre ASC');
+    // Pedro agrego consulta con los campos que me interesa traigo solos que tienen unidades activas
      const client = await consulta.request().query(`select cl.ClienteId, cl.RazonSocial, cl.CUIT, cl.DeudaTotal, cl.EsMoroso
-		from [181.10.162.155].TICKETS.dbo.cliente cl
+		from [181.10.162.155].REDGPS.dbo.cliente cl
 		inner join [181.10.162.155].Hawk.dbo.clientes clh on clh.Idcliente = IdExterno
-		where  IdEstado = 1 and cl.DeudaTotal > 100 order by RazonSocial asc`);
+		where  IdEstado = 1 
+    AND cl.ClienteId IN (SELECT DISTINCT ClienteID FROM [181.10.162.155].REDGPS.dbo.Dominio WHERE ClienteID IS NOT NULL and Estado = 1 ) 
+ORDER BY cl.RazonSocial ASC`);
+
     //query(`select ClienteId, RazonSOcial,CUIT, DeudaTotal, EsMoroso from [181.10.162.155].TICKETS.dbo.cliente where  fechaactualizacionestado >'20230101' order by fechaactualizacionestado desc`);
     //console.log(ser.recordset)
     param.ser=ser.recordset;
@@ -89,8 +92,7 @@ export class Model{
     //Pedro
     param.client=client.recordset;
     
-    //console.log(param);
-    //console.table(param.client);
+
     return param;
     } catch (err) {
       let code = ''
@@ -99,21 +101,51 @@ export class Model{
       return {error:code};
     }
   } 
+// agregado para traer dominioID, patente, modelo, color etc de una unidad
+//presiono el boton de cargar y hago un Select DominioID from [181.10.162.155].REDGPS.dbo.Dominio where Patente = '$$$$$', con este ID reemplazo en la consulta 
 
+static async getcaractactivos(){
+  let param ={}
+  try {
+  
+   const caract = await consulta.request().query(`Select dm.DominioID, dm.Patente, mar.Nombre ,md.Nombre , cl.Nombre
+from [181.10.162.155].REDGPS.dbo.Dominio dm
+left join [181.10.162.155].REDGPS.dbo.Marca mar on mar.MarcaID = dm.MarcaID
+left join [181.10.162.155].REDGPS.dbo.Modelo md on md.ModeloID = dm.ModeloID
+left join [181.10.162.155].REDGPS.dbo.color cl on cl.ColorID = dm.ColorID
+where DominioID = 18728`);  //  18728 aqui hay que cambiar por el DomnioID o por la Patente
+
+  cd
+  param.caract=caract.recordset;
+ 
+ 
+  
+
+  return param;
+  } catch (err) {
+    let code = ''
+    if(err.code ==='EREQUEST')code='FALTAN CAMPOS';
+    console.log('faltan campos');
+    return {error:code};
+  }
+} 
+
+
+
+
+// fin de agregado domino etc 
   static async postAll(consu){
-    // console.log(consu);
+
     try {
         const trazabilidad = await consulta.request().query(`EXEC dbo.SP_TRAZABILIDAD_FCDN '${consu.desde}','${consu.hasta}','${consu.entidad}','${consu.servicio}','${consu.centro}'`);
-      // console.log(trazabilidad.recordset);
+
       const fmanual = await consulta.request().query(`EXEC dbo.SP_TRAZABILIDAD_FCDN_MANUAL_1 '${consu.desde}','${consu.hasta}','${consu.entidad}','${consu.servicio}','${consu.centro}'`);
-      // console.log(fmanual.recordset);
+
       const frecepcion = await consulta.request().query(`EXEC dbo.SP_TRAZABILIDAD_FCDN_CAJA '${consu.desde}','${consu.hasta}','${consu.entidad}','${consu.servicio}','${consu.centro}'`);
-      // console.log(frecepcion.recordset);
+
       let traza = trazabilidad.recordset.concat(...fmanual.recordset, ...frecepcion.recordset);
 
-      // console.log(traza);
-      
-      // console.log(traza.length);
+
         if(traza.length === 0)throw new Error('NO EN CONTRADA')
         return traza;
       
@@ -133,14 +165,12 @@ export class Model{
       console.log('Conectando a la base de datos...');
 
     const cliente = await consulta.request().query(`select cl.ClienteId, cl.RazonSOcial, cl.CUIT, cl.DeudaTotal,cl.EsMoroso
-      from [181.10.162.155].TICKETS.dbo.cliente cl
+      from [181.10.162.155].REDGPS.dbo.cliente cl
       inner join [181.10.162.155].Hawk.dbo.clientes clh on clh.Idcliente = IdExterno
       where  IdEstado = 1   and cl.esmoroso = 1 and cl.DeudaTotal > 100 order by RazonSocial asc`);
-    //query(`SELECT ClienteId, RazonSOcial,CUIT, ROUND(DeudaTotal,2) as DeudaTotal, EsMoroso FROM [181.10.162.155].TICKETS.dbo.cliente WHERE 
-    //   fechaactualizacionestado >'20230101' AND EsMoroso = 1 and DeudaTotal>10 ORDER BY fechaactualizacionestado desc`);
-    
+
     console.log('Datos obtenidos de la base de datos:', cliente.recordset);
-    //Pedro
+
     param.cliente=cliente.recordset;
 
     if (cliente.recordset.length === 0) {
@@ -149,9 +179,6 @@ export class Model{
 
     return param
     
-    // console.log('resultado final', param);
-    //console.table(param.client);
-    // return param;
     } catch (err) {
       console.log('Error en getMorosos:', err);
       let code = ''
@@ -159,44 +186,51 @@ export class Model{
       return {error:code};
     }
   }
-  /*
-// nuevo getall
-static async getAll(){
-  let param ={}
-  try {
 
-    console.log('Conectando a la base de datos...');
+  //agregue la busqueda de gps por unidad 
+  static async getunidad(id){
+    let param ={}
+    
 
-  const cliente = await consulta.request().query(`select cl.ClienteId, cl.RazonSOcial, cl.CUIT, cl.DeudaTotal,cl.EsMoroso
-    from [181.10.162.155].TICKETS.dbo.cliente cl
-    inner join [181.10.162.155].Hawk.dbo.clientes clh on clh.Idcliente = IdExterno
-    where  IdEstado = 1    order by RazonSocial asc`);
-  //query(`SELECT ClienteId, RazonSOcial,CUIT, ROUND(DeudaTotal,2) as DeudaTotal, EsMoroso FROM [181.10.162.155].TICKETS.dbo.cliente WHERE 
-  //   fechaactualizacionestado >'20230101' AND EsMoroso = 1 and DeudaTotal>10 ORDER BY fechaactualizacionestado desc`);
+    try {
   
-  console.log('Datos obtenidos de la base de datos:', cliente.recordset);
-  //Pedro
-  param.cliente=cliente.recordset;
+      if (!id) return { error: "FALTA EL ID" };
+      console.log('id recibido: ', id)
+  
+     
+  
+      const movil = await consulta.request().query(`Select do.patente,tec.Descripcion, 
+    eq.numeroSerie,ch.NroLinea, eq.tecnologiaId, Tec.IdMarca,Tec.IdModelo,do.DominioId,do.IdRedGPS
+    from  [181.10.162.155].REDGPS.dbo.dominio do
+    inner join  [181.10.162.155].REDGPS.dbo.equipo eq on eq.DominioID = do.DominioID
+    inner join  [181.10.162.155].REDGPS.dbo.cliente cl on cl.ClienteID = do.ClienteID
+    inner join  [181.10.162.155].REDGPS.dbo.chip ch on ch.EquipoID = eq.EquipoID
+	inner join  [181.10.162.155].REDGPS.dbo.tecnologiarelacion tec on tec.idTecnologiaPronto  = eq.TecnologiaId
+ where do.DominioId = 19314  and do.Estado = 1`);
+  
+  
+      console.log('Datos obtenidos del movil :', movil.recordset);
+   console.log('Datos obtenidos de la base de datos:', movil.recordset);
 
-  if (cliente.recordset.length === 0) {
-    return res.status(201).json({ message: 'No se encontraron clientes' });
+    param.movil=movil.recordset;
+
+    if (movil.recordset.length === 0) {
+      return res.status(201).json({ message: 'No se encontro gps' });
+    }
+
+    return param
+    
+    } catch (err) {
+      console.log('Error en getUnidad:', err);
+      let code = ''
+      if(err.code ==='EREQUEST')code='FALTAN CAMPOS';
+      return {error:code};
+    }
   }
 
-  return param
-  
-  // console.log('resultado final', param);
-  //console.table(param.client);
-  // return param;
-  } catch (err) {
-    console.log('Error en getClientes:', err);
-    let code = ''
-    if(err.code ==='EREQUEST')code='FALTAN CAMPOS';
-    return {error:code};
-  }
-}
-*/
+      
+  // hasta aqui Peter 
 
-//Pedro para buscar unidades, equipos, sim por cliente
 static async getunidadesclientes(id){
   let param ={}
   
@@ -206,72 +240,61 @@ static async getunidadesclientes(id){
     if (!id) return { error: "FALTA EL ID" };
     console.log('id recibido: ', id)
 
-    const moviles = await consulta.request().query(`Select do.patente,gr.Descripcion, 
+   /*  const moviles = await consulta.request().query(`Select do.patente,gr.Descripcion, 
     eq.numeroSerie,ch.NroLinea, eq.tecnologiaId, do.estado
-    from  [181.10.162.155].TICKETS.dbo.dominio do
-    inner join  [181.10.162.155].TICKETS.dbo.equipo eq on eq.DominioID = do.DominioID
-    inner join  [181.10.162.155].TICKETS.dbo.cliente cl on cl.ClienteID = do.ClienteID
-    inner join  [181.10.162.155].TICKETS.dbo.chip ch on ch.EquipoID = eq.EquipoID
+    from  [181.10.162.155].REDGPS.dbo.dominio do
+    inner join  [181.10.162.155].REDGPS.dbo.equipo eq on eq.DominioID = do.DominioID
+    inner join  [181.10.162.155].REDGPS.dbo.cliente cl on cl.ClienteID = do.ClienteID
+    inner join  [181.10.162.155].REDGPS.dbo.chip ch on ch.EquipoID = eq.EquipoID
     inner join  [181.10.162.155].[Hawk].[dbo].[Articulos] art on art.idArticulo = eq.EquipoID
     inner join  [181.10.162.155].[Hawk].[dbo].[grados] gr on gr.idgrado = eq.TecnologiaID
-    where do.ClienteID = '${parseInt(id)}' and do.Estado = 1`);
+    where do.ClienteID = '${parseInt(id)}' and do.Estado = 1`); */
 
+    const moviles = await consulta.request().query(`SELECT do.patente,tec.Descripcion, 
+    eq.numeroSerie,ch.NroLinea, eq.tecnologiaId, Tec.IdMarca,Tec.IdModelo,do.DominioID,do.Estado
+    from  [181.10.162.155].REDGPS.dbo.dominio do
+    inner join  [181.10.162.155].REDGPS.dbo.equipo eq on eq.DominioID = do.DominioID
+    inner join  [181.10.162.155].REDGPS.dbo.cliente cl on cl.ClienteID = do.ClienteID
+    inner join  [181.10.162.155].REDGPS.dbo.chip ch on ch.EquipoID = eq.EquipoID
+	  inner join  [181.10.162.155].REDGPS.dbo.tecnologiarelacion tec on tec.idTecnologiaPronto  = eq.TecnologiaId
+      where do.ClienteID = '${parseInt(id)}' and do.Estado = 1`);
+
+
+
+    
     console.log('Datos obtenidos de la base de datos:', moviles.recordset);
-    //Pedro
-    // AGregado que trae de la api los datos de GPS
-/*
+    
+    const redId = await consulta.request().query(`select Red_Id from [181.10.162.155].REDGPS.dbo.cliente where ClienteId = ${parseInt(id)} `);
+    console.log('red id: ', redId)
+    const username = 'afardella@hawkgps.com';
+    const password = 'Hawk1234';
+    const apikey = '4cdb944f71ad386b8c46d806bb625c85';
 
-const activos = await obtenerActivosCliente(token, apikey, idCliente);
-  if (activos) {
-    console.log('Activos del cliente:', activos);
-  }
-
-  const activosPorPlaca = {};
-  if (activos && activos.data) {
-    activos.data.forEach(activo => {
-      activosPorPlaca[activo.placa] = activo;
-    });
-  }
-
-  param.moviles = moviles.recordset.map(movil => {
-    const activoCorrespondiente = activosPorPlaca[movil.patente];
-    if (activoCorrespondiente) {
-      return {
-        ...movil,
-        dispositivo: activoCorrespondiente.dispositivo,
-        sim: activoCorrespondiente.sim
-      };
+    const token = await obtenerToken(username, password, apikey);
+    if (token) {
+      const activos = await obtenerActivosCliente(token, apikey, parseInt(redId.recordset[0].Red_Id));
+      console.log('Respuesta de la API para activos:', activos);
+      if (activos && activos.data) {
+              console.log('Activos del cliente:', activos.data);
+              param.activos=activos.data;
+      } else {
+        console.error('No se encontraron activos para el cliente:', '85843');
+        return [];
+      }
     } else {
-      return {
-        ...movil,
-        dispositivo: null,
-        sim: null
-      };
+      return { error: 'No se pudo obtener el token de la API' };
     }
-  });
+    
 
-  if (param.moviles.length === 0) {
-    return res.status(201).json({ message: 'No se encontraron moviles' });
-  }
-
-  return param;
-} catch (error) {
-  console.error('Error:', error);
-  return { error: 'Ocurrió un error' };
-}
-
-*/
     param.moviles=moviles.recordset;
 
     if (moviles.recordset.length === 0) {
       return res.status(201).json({ message: 'No se encontraron moviles' });
     }
+   
 
-    return param
+    return param;
   
-  // console.log('resultado final', param);
-  //console.table(param.client);
-  // return param;
   } catch (err) {
     console.log('Error en getMoviles:', err);
     let code = ''
@@ -280,4 +303,29 @@ const activos = await obtenerActivosCliente(token, apikey, idCliente);
   }
 }
 
+
 }
+
+// actualizar ID en Pronto_RED 
+async function actualizarIdRedGps(idEquipoGps, dominioId) {
+  try {
+      const pool = await getConnection(); // Usar tu función de conexión existente
+
+      const request = pool.request();
+      request.input('idRedGPS', sql.Int, idEquipoGps);
+      request.input('dominioId', sql.Int, dominioId);
+
+      const result = await request.query(`
+          UPDATE dominio
+          SET IdRedGPS = @idRedGPS
+          WHERE DominioID = @dominioId
+      `);
+
+      console.log(`Equipo GPS con ID ${idEquipoGps} actualizado en la base de datos.`);
+      return result; // Opcional: devolver el resultado de la consulta
+  } catch (error) {
+      console.error('Error al actualizar la base de datos:', error);
+      throw error; // Re-lanzar el error para que se maneje en la función crearEquipoGps
+  }
+}
+

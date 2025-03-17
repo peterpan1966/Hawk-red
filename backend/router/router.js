@@ -25,5 +25,7 @@ export const createRouter= ({model})=>{
     
     router.post('/trazabilidad/descargar', controllers.postDes);
 
+//agregado para traer las caracteristcas del activo 
+    router.get('/caractactivos/:id?', controllers.getcaractactivos);
     return router;
 }

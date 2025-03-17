@@ -4,10 +4,46 @@ body{
     user-select: none;
   }
 
+.contenedor {
+  display: flex;
+  justify-content: space-around;
+  gap: 100px;
+    
+}
+
+.card {
+  margin-top: 12rem;
+  /* flex: 0 1 45%; */
+  /* max-width: 45%; 
+  min-width: 300px;  */
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* width: 400px; */
+  text-align: center;
+
+  .table-container {
+    margin-top: 0px;
+  }
+}
+
+@media screen and (max-width: 1550px) {
+  .contenedor {
+    display: flex;
+     /* Asegura que las tarjetas no se amontonen */
+    justify-content: space-around; /* Centra los elementos si hay espacio */
+    gap: 10px;
+  }
+
+ 
+}
+
   .filaFija {
     background-color: rgb(233, 53, 53);
     position: sticky;
-    top: 12rem
+    height: 60px;
+    top: 15rem
   }
 
   #titulo{
@@ -118,15 +154,24 @@ body{
   }
   
   /* ESTILO DATOS DOM                  ---------------- */
-
+ /*agregado Peter*/
+ #tablaVehiculos td:first-child {
+  padding: 0; /* Elimina el padding */
+  text-align: center; /* Asegura que el checkbox esté centrado */
+}
+ .table tr {
+  height: 26px; /* Ajusta este valor según sea necesario */
+}
+/*  hasta aqui Peter*/
   .table-container {
     margin: 20px;
     padding: 15px;
+    margin-top: 260px;
 }
   
   .table{
     border-collapse: separate;
-    margin-top: 12rem;
+    /* margin-top: 12rem; */
     /* padding-top: 15em; */
     /* min-height: 50vh;
     width: 100%;
@@ -139,6 +184,8 @@ body{
   .table td, .table th {
     border: 1px solid #000; /* Agrega un borde */
     padding: 0.5em; 
+    line-height: 1.2;  /*agregue una altura pra el texto Peter*/
+    min-height: 30px; /* Ajusta este valor según sea necesario Peter*/
     text-align: center;
     vertical-align: middle; 
 }
@@ -231,3 +278,11 @@ body{
     }
   
   }
+  .play-button {
+    padding: 2px 5px; /* Reduce el padding */
+    font-size: 0.3em; /* Reduce el tamaño de la fuente */
+}
+
+.play-button i {
+    font-size: 0.8em; /* Reduce el tamaño del icono */
+}
