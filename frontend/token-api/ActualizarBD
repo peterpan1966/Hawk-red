@@ -1,0 +1,47 @@
+// testPostUpdCliente.js
+//import sql from "mssql";
+//import 'dotenv/config.js'
+
+const tuModulo = require('http://${API_URL}/fcdn/trazabilidad/updBD');        // Reemplaza './tuModulo' con la ruta correcta a tu módulo
+//const sql = require('mssql');
+
+async function testPostUpdCliente() {
+  try {
+    //valores de prueba
+    const id_cliente = 26645;
+    const clienteID1 = 1;
+
+    //configuracion de la base de datos
+    const defaultConfig = {
+        user: process.env.USER_DB,
+        password: process.env.PASS_DB,
+        server: process.env.SERV_DB,
+        database:process.env.DATA_DB,
+        options:{
+          trustServerCertificate: true, // change to true for local dev / self-signed certs
+        }
+      }
+      
+      
+      const connectionStrring = process.env.DATABASE_url ?? defaultConfig;
+      
+       const pool =  await sql.connect(connectionStrring);
+      
+    //conexion a la base de datos
+  
+    consulta = pool;
+
+    //ejecutamos la funcion a probar
+    const resultado = await tuModulo.postUpdCliente(id_cliente, clienteID1);
+
+    //mostramos el resultado por consola.
+    console.log('Resultado de postUpdCliente:', resultado);
+
+    //cerramos la conexion a la base de datos
+    await sql.close();
+  } catch (error) {
+    console.error('Error en la prueba:', error);
+  }
+}
+
+testPostUpdCliente();

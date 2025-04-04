@@ -64,7 +64,7 @@ async function obtenerClientes(token, apikey) {
   }
 }
 
-// agregado para obtener activos de un cliente 
+// agregado para obtener activos de un cliente  aca este como obtiene Sofi  eel activo 
 
 async function obtenerActivosCliente(token, apikey, idCliente) {
   const url = 'https://api.service24gps.com/api/v1/getClientAssetsInfo';

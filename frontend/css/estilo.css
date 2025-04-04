@@ -40,7 +40,7 @@ body{
 }
 
   .filaFija {
-    background-color: rgb(233, 53, 53);
+    background-color: rgb(141, 11, 11);
     position: sticky;
     height: 60px;
     top: 15rem
@@ -181,14 +181,21 @@ body{
     width: 100%;
   }
 
-  .table td, .table th {
+  .table td, .table th, .table tr {
     border: 1px solid #000; /* Agrega un borde */
     padding: 0.5em; 
     line-height: 1.2;  /*agregue una altura pra el texto Peter*/
-    min-height: 30px; /* Ajusta este valor según sea necesario Peter*/
+    height: 40px; /* Ajusta este valor según sea necesario Peter*/
     text-align: center;
     vertical-align: middle; 
 }
+
+  #tabla_clientes {
+    .td, .tr, .th{
+      height: 30px;
+    }
+  }
+
   
   /* .encabezado{
     position: sticky;

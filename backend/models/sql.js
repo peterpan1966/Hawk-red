@@ -70,14 +70,14 @@ export class Model{
    static async getAll(){
     let param ={}
     try {
-    const ser = await consulta.request().query('SELECT ser_nombre, ser_id FROM servicio WHERE ser_deshabilitado=0 ORDER BY ser_nombre ASC');
+    //const ser = await consulta.request().query('SELECT ser_nombre, ser_id FROM servicio WHERE ser_deshabilitado=0 ORDER BY ser_nombre ASC');
    // const ent = await consulta.request().query('SELECT ent_id, ent_nombre FROM entidad WHERE ent_deshabilitado=0 ORDER BY ent_nombre ASC');
     //const cen = await consulta.request().query('SELECT cen_id, cen_nombre FROM centro WHERE cen_deshabilitado=0 ORDER BY cen_nombre ASC');
-    // const ser = await consulta.request().query('SELECT top 5 Nombre from  [181.10.162.155].TICKETS.dbo.Tecnico ORDER BY Nombre ASC');
-    const ent = await consulta.request().query('SELECT ClienteId as ent_id, RazonSocial as ent_nombre from  [181.10.162.155].REDGPS.dbo.Cliente  ORDER BY ClienteId ASC');
+     const ser = await consulta.request().query('SELECT top 5 Nombre from  [181.10.162.155].TICKETS.dbo.Tecnico ORDER BY Nombre ASC');
+    const ent = await consulta.request().query('SELECT ClienteId as ent_id, RazonSocial as ent_nombre, Red_id as ent_redid from  [181.10.162.155].REDGPS.dbo.Cliente  ORDER BY ClienteId ASC');
     const cen = await consulta.request().query('SELECT TecnicoId as cen_id, Nombre as cen_nombre from [181.10.162.155].REDGPS.dbo.Tecnico ORDER BY Nombre ASC');
     // Pedro agrego consulta con los campos que me interesa traigo solos que tienen unidades activas
-     const client = await consulta.request().query(`select cl.ClienteId, cl.RazonSocial, cl.CUIT, cl.DeudaTotal, cl.EsMoroso
+     const client = await consulta.request().query(`select cl.ClienteId, cl.RazonSocial, cl.CUIT, cl.DeudaTotal, cl.EsMoroso,cl.Red_ID
 		from [181.10.162.155].REDGPS.dbo.cliente cl
 		inner join [181.10.162.155].Hawk.dbo.clientes clh on clh.Idcliente = IdExterno
 		where  IdEstado = 1 
@@ -104,22 +104,27 @@ ORDER BY cl.RazonSocial ASC`);
 // agregado para traer dominioID, patente, modelo, color etc de una unidad
 //presiono el boton de cargar y hago un Select DominioID from [181.10.162.155].REDGPS.dbo.Dominio where Patente = '$$$$$', con este ID reemplazo en la consulta 
 
-static async getcaractactivos(){
+static async getcaractactivos(id){
   let param ={}
   try {
+    if (!id) return { error: "FALTA EL ID" };
+    console.log('id recibido: ', id)
   
-   const caract = await consulta.request().query(`Select dm.DominioID, dm.Patente, mar.Nombre ,md.Nombre , cl.Nombre
+   const caract = await consulta.request().query(`Select dm.DominioID, dm.Patente, mar.Nombre ,md.Nombre , cl.Nombre, cli.Red_id, cli.razonSocial as cliente, dm.ClienteID
 from [181.10.162.155].REDGPS.dbo.Dominio dm
 left join [181.10.162.155].REDGPS.dbo.Marca mar on mar.MarcaID = dm.MarcaID
 left join [181.10.162.155].REDGPS.dbo.Modelo md on md.ModeloID = dm.ModeloID
 left join [181.10.162.155].REDGPS.dbo.color cl on cl.ColorID = dm.ColorID
-where DominioID = 18728`);  //  18728 aqui hay que cambiar por el DomnioID o por la Patente
+inner join [181.10.162.155].REDGPS.dbo.cliente cli on cli.ClienteID = dm.ClienteID
+where DominioID = ${id} `);  //  18728 aqui hay que cambiar por el DomnioID o por la Patente
 
-  cd
-  param.caract=caract.recordset;
- 
- 
+  console.log('Datos obtenidos del movil :', caract.recordset);
   
+  
+  param.caract=caract.recordset;
+  if (caract.recordset.length === 0) {
+    return res.status(201).json({ message: 'No se encontro caracteristicas' });
+  }
 
   return param;
   } catch (err) {
@@ -131,9 +136,62 @@ where DominioID = 18728`);  //  18728 aqui hay que cambiar por el DomnioID o por
 } 
 
 
+   
 
 
 // fin de agregado domino etc 
+
+// hacer el update en cliente del RED_ID
+
+ static async postUpdCliente(id_cliente, clienteID1) {
+  try {
+    const update = await consulta
+      .request()
+      .input('id_cliente', id_cliente)
+      .input('clienteID1', clienteID1)
+      .query(
+        'UPDATE [181.10.162.155].REDGPS.dbo.cliente SET Red_ID = @id_cliente WHERE ClienteId = @clienteID1'
+      );
+
+    if (update.rowsAffected && update.rowsAffected[0] > 0) {
+      return id_cliente;  //{ message: 'Una fila actualizada' };
+    } else {
+      return  null; //{ message: 'No se encontró ninguna fila para actualizar' };
+    }
+  } catch (err) {
+    console.error('Error al actualizar cliente:', err);
+    let errorMessage = err.message;
+    if (err.code === 'EREQUEST') {
+      errorMessage = 'Error de solicitud SQL';
+    }
+    return { error: errorMessage };
+  }
+}
+ 
+
+
+/* //update original
+ static async postUpdCliente(id_cliente,clienteID1){
+
+  try {
+      const update = await consulta.request().query(`update  [181.10.162.155].REDGPS.dbo.cliente set Red_ID =${id_cliente}  where ClienteId = ${clienteID1} `);
+      if (result.rowsAffected && result.rowsAffected[0] > 0) {
+        return { message: "Una fila actualizada" };
+    } else {
+        return { message: "No se encontró ninguna fila para actualizar" };
+    }
+} catch (err) {
+    console.error("Error al actualizar cliente:", err);
+    let errorMessage = err.message;
+    if (err.code === 'EREQUEST') {
+        errorMessage = "Error de solicitud SQL";
+    }
+    return { error: errorMessage };
+}
+} 
+// hasta aqui el update */
+
+
   static async postAll(consu){
 
     try {
@@ -197,20 +255,19 @@ where DominioID = 18728`);  //  18728 aqui hay que cambiar por el DomnioID o por
       if (!id) return { error: "FALTA EL ID" };
       console.log('id recibido: ', id)
   
-     
   
       const movil = await consulta.request().query(`Select do.patente,tec.Descripcion, 
-    eq.numeroSerie,ch.NroLinea, eq.tecnologiaId, Tec.IdMarca,Tec.IdModelo,do.DominioId,do.IdRedGPS
+    eq.numeroSerie,ch.NroLinea, eq.tecnologiaId, Tec.IdMarca,Tec.IdModelo,do.DominioId,do.IdRedGPS, cl.razonSocial
     from  [181.10.162.155].REDGPS.dbo.dominio do
     inner join  [181.10.162.155].REDGPS.dbo.equipo eq on eq.DominioID = do.DominioID
     inner join  [181.10.162.155].REDGPS.dbo.cliente cl on cl.ClienteID = do.ClienteID
     inner join  [181.10.162.155].REDGPS.dbo.chip ch on ch.EquipoID = eq.EquipoID
 	inner join  [181.10.162.155].REDGPS.dbo.tecnologiarelacion tec on tec.idTecnologiaPronto  = eq.TecnologiaId
- where do.DominioId = 19314  and do.Estado = 1`);
+ where do.DominioId = ${id}  and do.Estado = 1`);
   
   
-      console.log('Datos obtenidos del movil :', movil.recordset);
-   console.log('Datos obtenidos de la base de datos:', movil.recordset);
+   console.log('Datos obtenidos del movil :', movil.recordset);
+
 
     param.movil=movil.recordset;
 
@@ -228,8 +285,37 @@ where DominioID = 18728`);  //  18728 aqui hay que cambiar por el DomnioID o por
     }
   }
 
-      
-  // hasta aqui Peter 
+    
+  //Martes 25 
+static async getdatoscliente(id){
+  let param ={}
+  try {
+    if (!id) return { error: "FALTA EL ID" };
+    console.log('id recibido: ', id)
+  
+   const clientedata = await consulta.request().query(`Select ClienteID, CUIT, RazonSocial, Direccion,Email , Red_ID
+from [181.10.162.155].REDGPS.dbo.cliente 
+where ClienteID = ${id} `);  //  18728 aqui hay que cambiar por el DomnioID o por la Patente
+
+  console.log('Datos obtenidos del cliente :', clientedata.recordset);
+  
+  
+  param.clientedata=clientedata.recordset;
+  if (clientedata.recordset.length === 0) {
+    return res.status(201).json({ message: 'No se encontro clientedata' });
+  }
+
+  return param;
+  } catch (err) {
+    let code = ''
+    if(err.code ==='EREQUEST')code='FALTAN CAMPOS';
+    console.log('faltan campos');
+    return {error:code};
+  }
+}
+
+
+  // hasta aqui Peter martes 
 
 static async getunidadesclientes(id){
   let param ={}
@@ -251,7 +337,7 @@ static async getunidadesclientes(id){
     where do.ClienteID = '${parseInt(id)}' and do.Estado = 1`); */
 
     const moviles = await consulta.request().query(`SELECT do.patente,tec.Descripcion, 
-    eq.numeroSerie,ch.NroLinea, eq.tecnologiaId, Tec.IdMarca,Tec.IdModelo,do.DominioID,do.Estado
+    eq.numeroSerie,ch.NroLinea, eq.tecnologiaId, Tec.IdMarca,Tec.IdModelo,do.DominioID,do.Estado,cl.Red_ID
     from  [181.10.162.155].REDGPS.dbo.dominio do
     inner join  [181.10.162.155].REDGPS.dbo.equipo eq on eq.DominioID = do.DominioID
     inner join  [181.10.162.155].REDGPS.dbo.cliente cl on cl.ClienteID = do.ClienteID
@@ -327,5 +413,7 @@ async function actualizarIdRedGps(idEquipoGps, dominioId) {
       console.error('Error al actualizar la base de datos:', error);
       throw error; // Re-lanzar el error para que se maneje en la función crearEquipoGps
   }
+
 }
+///
 

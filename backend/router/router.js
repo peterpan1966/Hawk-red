@@ -22,10 +22,13 @@ export const createRouter= ({model})=>{
     router.get('/unidadesClientes/:id?', controllers.getunidadesclientes);
 
     router.post('/trazabilidad',controllers.postAll);
+    router.post('/trazabilidad/updBD',controllers.postUpdCliente);
     
     router.post('/trazabilidad/descargar', controllers.postDes);
 
-//agregado para traer las caracteristcas del activo 
+//agregado para traer las caracteristcas del activo Peter
     router.get('/caractactivos/:id?', controllers.getcaractactivos);
+    router.get('/unidad/:id?',controllers.getunidad);
+    router.get('/datoscliente/:id?', controllers.getdatoscliente);
     return router;
 }

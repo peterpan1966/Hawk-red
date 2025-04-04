@@ -46,10 +46,15 @@ const fila_1 = document.createElement('tr')
 fila_1.className = "filaFija"
 const nombre = document.createElement('th')
 const id = document.createElement('th')
+const redId = document.createElement('th')
 nombre.textContent = 'razon social'
 id.textContent = 'id'
+redId.textContent = 'red id'
+//redId.textContent ='RedId'//peterlunes
 fila_1.appendChild(id)
+fila_1.appendChild(redId)
 fila_1.appendChild(nombre)
+//fila_1.appendChild(redId)  //Peterlunes
 table.appendChild(fila_1)
 
 // console.log(e.ent[0]); 
@@ -73,14 +78,18 @@ for (const iterator of e.client) {
 
     const razon_social = document.createElement('td')
     const id = document.createElement('td')
+    const redId = document.createElement('td')
     const unidades = document.createElement('td')
+   // const redId = document.createElement('td')//Peterlunes
+
 
     const link = document.createElement('a')
     const imagen = document.createElement('img')
 
     id.textContent = iterator.ClienteId;
+    redId.textContent = iterator.Red_ID;
     razon_social.textContent = iterator.RazonSocial;
-
+    //redId.textContent = iterator.Red_ID; //Peterlunes
     imagen.src = '../img/auto.jpg'
     link.appendChild(imagen)
     link.href = `../fcdn/unidadesVehiculos.html?id=${iterator.ClienteId}&razonSocial=${iterator.RazonSocial}`
@@ -90,7 +99,9 @@ for (const iterator of e.client) {
 // console.log('clienteid', iterator.ClienteId)
 // console.log(option)
     fila.appendChild(id)
+    fila.appendChild(redId)
     fila.appendChild(razon_social);
+    //fila.appendChild(redId) //Peterlunes
     fila.appendChild(unidades)
     table.appendChild(fila)
 }

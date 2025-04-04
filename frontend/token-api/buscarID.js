@@ -64,7 +64,40 @@ async function obtenerClientes(token, apikey) {
   }
 }
 
-// agregado para obtener activos de un cliente 
+
+//para obtener el listado de todos los Activos y sus datos
+
+
+
+/* async function obtenerActivosCliente(token, apikey, idCliente) {
+  const url = 'https://api.service24gps.com/api/v1/getClientAssetsInfo';
+
+  const formData = new URLSearchParams();
+  formData.append('apikey', apikey);
+  formData.append('token', token);
+  formData.append('idCliente', idCliente);
+
+  try {
+      const response = await fetch(url, {
+          method: 'POST',
+          body: formData,
+      });
+
+
+      if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const activos = await response.json();
+    //   console.log("Datos obtenerActivosCliente:", activos);
+      return activos;
+  } catch (error) {
+      console.error('Error al obtener activos del cliente:', error);
+      return null;
+  }
+} 
+ */
+// agregado para obtener activos de un cliente */
 
 async function obtenerActivosCliente(token, apikey, idCliente) {
   const url = 'https://api.service24gps.com/api/v1/getClientAssetsInfo';
@@ -170,7 +203,7 @@ async function obtenerModelosEquiposGps(token, apikey) {
         }
 
         const modelos = await response.json();
-       // console.log("Modelos de equipos GPS:", modelos);
+        //console.log("Modelos de equipos GPS:", modelos);
         return modelos;
     } catch (error) {
         console.error('Error al obtener modelos de equipos GPS:', error);
@@ -179,7 +212,7 @@ async function obtenerModelosEquiposGps(token, apikey) {
 }
 
 async function obtenerMarcasyModeloActivos(token, apikey) {
-    const url = 'https://api.service24gps.com/api/v1/getBrandsAndModels';
+    const url = 'https://api.service24gps.com/api/v1/getVehiclesBrands';
 
     const formData = new URLSearchParams();
     formData.append('apikey', apikey);
@@ -195,7 +228,7 @@ async function obtenerMarcasyModeloActivos(token, apikey) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
        const marymod = await response.json();
-       console.log("Modeloymarca activos:", marymod);
+       //console.log("Modeloymarca activos:", marymod);
         return marymod;
     } catch (error) {
         console.error('Error al obtener marca y modelos activos:', error);
@@ -203,19 +236,125 @@ async function obtenerMarcasyModeloActivos(token, apikey) {
     }
 }
 
+// obtener sims
+
+//obtener activos de un cliente https://api.service24gps.com/api/v1/getClientAssetsInfo
+
+
+// 
+async function obtenerSims(token, apikey) {
+    const url = 'https://api.service24gps.com/api/v1/getDevices';
+
+    const formData = new URLSearchParams();
+    formData.append('apikey', apikey);
+    formData.append('token', token);
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const devices = await response.json();
+       //console.log("Marcas de devices:", devices);
+        return devices;
+    } catch (error) {
+        console.error('Error al obtener sims:', error);
+        return null;
+    }
+}
+// crear SIms 
+/* async function setSims(token, apikey,nombre,nro_tel,nro_nip) {
+    const url = 'https://api.service24gps.com/api/v1/setSim';
+   
+    const formData = new URLSearchParams();
+    formData.append('apikey', apikey);
+    formData.append('token', token);
+    formData.append('nombre',nombre);
+    formData.append('nro_tel',nro_tel);
+    formData.append('nro_nip',nro_nip);
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData,
+            
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const sim = await response.json();
+      
+        if (sim.status !== 200) {
+            // La API reportó un error específico, mostrar el mensaje de 'data'
+            console.error('Error de la API:', sim);
+            throw new Error(`Error de la API: status ${sim.status}, data: ${sim.data}`);
+
+        }
+
+        console.log("simcreado Peter :", sim);
+        return sim;
+    } catch (error) {
+        console.error('Error al crear sims:', error);
+        return null;
+    }
+}
+
+ */
+
+
+// obtener activos de un cliente
+
+
+/* async function obtenerActivos(token, apikey,idcliente) {
+    const url = 'https://api.service24gps.com/api/v1/getClientAssetsInfos';
+
+    const formData = new URLSearchParams();
+    formData.append('apikey', apikey);
+    formData.append('token', token);
+   // formData.append('idCliente', idCliente);
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const activos= await response.json();
+       console.log("activos :", activos);
+        return activos;
+    } catch (error) {
+        console.error('Error al obtener activos:', error);
+        return null;
+    }
+} */
+//
 async function main() {
   const username = 'afardella@hawkgps.com';
   const password = 'Hawk1234';
   const apikey = '4cdb944f71ad386b8c46d806bb625c85';
   const idCliente = '85843'; // ID del cliente para el que quieres obtener los activos
-  //const cookie = 'PHPSESSID=mhtsnhrvb2699k19ekpp0ii7j9'; // Reemplaza con tu cookie real
+  const nombre = '1162535076';
+  const nro_tel = '1162535076';
+  const nro_nip = '1120';
+ //const cookie = 'PHPSESSID=mhtsnhrvb2699k19ekpp0ii7j9'; // Reemplaza con tu cookie real
 
   const token = await obtenerToken(username, password, apikey);
   if (token) {
     console.log('Token obtenido:', token);
     const clientes = await obtenerClientes(token, apikey);
     if (clientes) {
-      //console.log('Clientes:', clientes);
+      console.log('Clientes:', clientes);
     }
     const activos = await obtenerActivosCliente(token, apikey, idCliente);
     if (activos) {
@@ -233,11 +372,25 @@ async function main() {
 
       const marymod = await obtenerMarcasyModeloActivos(token, apikey, idCliente);
      if (marymod) {
-           console.log('Marcasymodelosactivos:', marymod);
+         //  console.log('Marcasymodelosactivos:', marymod);
       }
 
-    
-      
+      const sims = await obtenerSims(token, apikey, idCliente);
+      if (sims) {
+           // console.log('sims:', sims);
+       }
+
+       
+       const Activosfull = await obtenerVehiculosCompletos(token, apikey);
+       if (Activosfull) {
+            // console.log('sActivosFull', Activosfull);
+        }
+ 
+        const sim = await setSims(token, apikey,nombre,nro_tel,nro_nip);
+       //console.log('datos para crar sim',nombre,nro_tel,nro_nip);
+        if (sim) {
+             console.log('Simcreado', sim);
+         }
   }
 
 
@@ -254,4 +407,5 @@ export {
   obtenerClientes, 
   obtenerActivosCliente, 
   obtenerVehiculosCompletos 
+
 };

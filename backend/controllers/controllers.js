@@ -152,6 +152,108 @@ getcaractactivos= async (req,res)=>{
 
 // hasta aqui caractertisticas del activo 
 
+//agregado de datos del cliente
+getdatoscliente= async (req,res)=>{
+  // let saludo = 'hola'
+  try{
+    console.log("Parámetros recibidos en la URL:", req.params);
+    const id = req.params.id;
+
+    // Verificar si el ID es válido
+    if (!id || isNaN(id)) {
+      return res.status(400).json({ error: "FALTA EL ID" });
+    }
+
+    // Convertir a entero y realizar la consulta
+    const parsedId = parseInt(id, 10);
+
+    const items = await this.model.getdatoscliente(parsedId);
+    
+    console.log(items);
+    // console.log('controller');
+    if(items.error){
+      console.log(items.error)
+      return res.status(400).json(items);
+    }
+    return res.json(items);
+} catch (err) {
+  console.error('error', err);
+  return res.status(500).json({ error: 'Error en el servidor' });
+}
+}
+
+// hasta aqui caractertisticas del activo 
+
+
+
+
+
+//agregado getunidad
+getunidad= async (req,res)=>{
+  // let saludo = 'hola'
+  try{
+    console.log("Parámetros recibidos en la URL:", req.params);
+    const id = req.params.id;
+
+    // Verificar si el ID es válido
+    if (!id || isNaN(id)) {
+      return res.status(400).json({ error: "FALTA EL ID" });
+    }
+
+    // Convertir a entero y realizar la consulta
+    const parsedId = parseInt(id, 10);
+
+    const items = await this.model.getunidad(parsedId);
+    
+    console.log(items);
+    // console.log('controller');
+    if(items.error){
+      console.log(items.error)
+      return res.status(400).json(items);
+    }
+    return res.json(items);
+} catch (err) {
+  console.error('error', err);
+  return res.status(500).json({ error: 'Error en el servidor' });
+}
+}
+
+
+//hasta aqui Peter
+// agrego el update del RedId en tabla clientes
+/* postUpdCliente= async(req,res)=>{
+  const consulta = req.body
+  console.log(body);
+  console.log(consulta);
+
+  const datos = await this.model.postUpdCliente(consulta);  //cambie consulta por la variables
+  // console.log(datos);
+  if(datos.error)return res.status(400).json(datos);
+  // console.log('paso');
+  return res.status(200).json(datos);
+
+} */
+// nuevo postUpdCliente by IA
+
+postUpdCliente = async (req, res) => {
+  const { id_cliente, clienteID1 } = req.body;
+  console.log('req.body:', req.body);
+
+  const resultado = await this.model.postUpdCliente(id_cliente, clienteID1);
+
+  if (resultado && resultado.error) {
+    return res.status(400).json(resultado); // Envia el error si existe
+  }
+
+  if (resultado === null) {
+    return res.status(404).json({ message: 'No se encontró la fila para actualizar' }); // O un código de estado adecuado
+  }
+
+  return res.status(200).json({ id_cliente: resultado }); // Envia solo el id_cliente
+};
+
+
+// hasta aqui el update
 postAll= async(req,res)=>{
   const consulta = req.body
   // console.log(consulta);
